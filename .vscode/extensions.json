@@ -1,0 +1,17 @@
+{
+  "recommendations": [
+    "EditorConfig.EditorConfig",
+    "Tyriar.sort-lines",
+    "aaron-bond.better-comments",
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "mikestead.dotenv",
+    "rbbit.typescript-hero",
+    "streetsidesoftware.code-spell-checker",
+    "vscode-icons-team.vscode-icons",
+    "xabikos.JavaScriptSnippets",
+    "yoavbls.pretty-ts-errors"
+  ]
+}
