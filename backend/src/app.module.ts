@@ -5,8 +5,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import dbConfig from './database/db.config';
 import { UsersModule } from './api/users/users.module';
 import { AuthModule } from './api/auth/auth.module';
+import { AppService } from './app.service';
 
 @Module({
+  providers: [AppService],
   imports: [
     TypeOrmModule.forRootAsync({ useFactory: dbConfig }),
     ConfigModule,

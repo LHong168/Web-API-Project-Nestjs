@@ -8,6 +8,7 @@ import { isPasswordMatched } from 'utils/hash-password';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthenticateDto } from './auth.dto';
+import { Role } from './role/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -35,7 +36,10 @@ export class AuthService {
 
     if (user) return new ConflictException('User already exist');
 
-    const newUser = await this.usersService.createUser(authenticateDto);
+    const newUser = await this.usersService.createUser({
+      ...authenticateDto,
+      role: 'USER' as Role,
+    });
 
     const payload = { sub: newUser.id, email: newUser.email };
 
