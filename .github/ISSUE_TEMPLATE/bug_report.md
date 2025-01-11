@@ -1,10 +1,9 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
-
+title: ""
+labels: ""
+assignees: ""
 ---
 
 ## Current behavior
@@ -25,7 +24,6 @@ assignees: ''
 
 <pre><code>
   For Tooling issues:
-  - Nextjs version: ?
   - Node version: ?  
   - Platform:  Mac/Windows
 

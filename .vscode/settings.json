@@ -5,10 +5,7 @@
     "source.fixAll.eslint": "always"
   },
   "tailwindCSS.experimental.classRegex": [
-    [
-      "cva\\(([^)]*)\\)",
-      "[\"'`]([^\"'`]*).*?[\"'`]"
-    ]
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
   ],
   "files.exclude": {
     "**/.git": true,
@@ -30,16 +27,5 @@
     "**/node_modules": true,
     "**/dist": true
   },
-  "cSpell.words": [
-    "clsx",
-    "hookform",
-    "nextjs",
-    "strapi",
-    "swiper",
-    "tabler",
-    "tailwindcss",
-    "valibot",
-    "weduabroad",
-    "zustand"
-  ]
+  "cSpell.words": []
 }
