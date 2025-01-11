@@ -3,23 +3,23 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { UserService } from '../user/user.service';
+import { UsersService } from '../users/users.service';
 import { isPasswordMatched } from 'utils/hash-password';
 import { JwtService } from '@nestjs/jwt';
-import { CreateUserDto } from '../user/dto/create-user.dto';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthenticateDto } from './auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
+    private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   async logIn(email: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(email);
 
-    if (!isPasswordMatched(pass, user?.password)) {
+    if (!user || !isPasswordMatched(pass, user?.password)) {
       throw new UnauthorizedException();
     }
 

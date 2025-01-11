@@ -1,22 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { hashPassword } from 'utils/hash-password';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/users.entity';
 
 @Injectable()
-export class UserService {
+export class UsersService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  createUser(createUserDto: CreateUserDto): Promise<User> {
     const user: User = new User();
     user.email = createUserDto.email;
     user.username = createUserDto.username;
-    user.password = await hashPassword(createUserDto.password);
+    user.password = createUserDto.password;
+
+    const userExist = this.findByUserEmail(user.email);
+
+    if (userExist) return;
+
     return this.userRepository.save(user);
   }
 
@@ -28,7 +32,7 @@ export class UserService {
     return this.userRepository.findOneBy({ id });
   }
 
-  findByEmail(email: string): Promise<User> {
+  findByUserEmail(email: string): Promise<User> {
     return this.userRepository.findOneBy({ email });
   }
 

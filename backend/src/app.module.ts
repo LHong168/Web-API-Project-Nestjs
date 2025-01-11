@@ -3,8 +3,7 @@ import { ConfigModule } from './lib/config';
 import { JwtModule } from './lib/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import dbConfig from './database/db.config';
-import { UserModule } from './api/user/user.module';
-import { AuthController } from './api/auth/auth.controller';
+import { UsersModule } from './api/users/users.module';
 import { AuthModule } from './api/auth/auth.module';
 
 @Module({
@@ -12,7 +11,7 @@ import { AuthModule } from './api/auth/auth.module';
     TypeOrmModule.forRootAsync({ useFactory: dbConfig }),
     ConfigModule,
     JwtModule,
-    UserModule,
+    UsersModule,
     AuthModule,
   ],
 })
