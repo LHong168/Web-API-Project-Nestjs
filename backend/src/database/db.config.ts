@@ -1,6 +1,5 @@
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 import * as path from 'path';
-import { registerAs } from '@nestjs/config';
 
 export default (): PostgresConnectionOptions => ({
   type: 'postgres',
