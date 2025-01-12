@@ -1,7 +1,7 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { hashPassword } from 'utils/hash-password';
 import { UsersService } from './api/users/users.service';
-import { Role } from './api/auth/role/role.enum';
+import { Role } from './common/role/role.enum';
 
 @Injectable()
 export class AppService implements OnModuleInit {
