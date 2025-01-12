@@ -16,7 +16,7 @@ export class AppService implements OnModuleInit {
         email: adminEmail,
         password: adminPassword,
         username: 'Admin',
-        role: 'ADMIN' as Role,
+        role: Role.ADMIN,
       });
     }
   }

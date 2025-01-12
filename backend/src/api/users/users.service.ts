@@ -26,23 +26,23 @@ export class UsersService {
     return this.userRepository.find();
   }
 
-  findByUserId(id: number): Promise<User> {
+  findByUserId(id: number): Promise<User | null> {
     return this.userRepository.findOneBy({ id });
   }
 
-  findByEmail(email: string): Promise<User> {
+  findByEmail(email: string): Promise<User | null> {
     return this.userRepository.findOneBy({ email });
   }
 
   updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user: User = new User();
-    user.username = updateUserDto.username;
-    user.password = updateUserDto.password;
+    user.username = updateUserDto.username || '';
+    user.password = updateUserDto.password || '';
     user.id = id;
     return this.userRepository.save(user);
   }
 
-  removeUser(id: number): Promise<{ affected?: number }> {
+  removeUser(id: number): Promise<{ affected?: number | null }> {
     return this.userRepository.delete(id);
   }
 }
