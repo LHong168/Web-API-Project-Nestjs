@@ -1,6 +1,7 @@
 import {
   ConflictException,
   Injectable,
+  Logger,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
@@ -20,10 +21,10 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
 
     if (!user || !isPasswordMatched(pass, user?.password)) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Invalid User Credential.');
     }
 
-    const payload = { sub: user.id, email: user.email };
+    const payload = { sub: user.id, email: user.email, role: user.role };
 
     return {
       access_token: await this.jwtService.signAsync(payload),
