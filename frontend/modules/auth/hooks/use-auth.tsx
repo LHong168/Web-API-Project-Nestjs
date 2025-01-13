@@ -5,6 +5,7 @@ import { api } from "./use-auth-request";
 import { isNetworkError } from "@/helpers/network-error";
 import { AuthLogin, AuthRegister, AuthError } from "../interface";
 import { useToast } from "@/hooks/use-toast";
+import { removeAuthFromCookies, setAuthInCookies } from "@/helpers/cookies";
 
 export interface AuthUser {
   id?: number;
@@ -15,8 +16,9 @@ export interface AuthUser {
 
 interface AuthContextType {
   loading: boolean;
-  login: (data: AuthLogin) => Promise<void>;
-  register: (data: AuthRegister) => Promise<void>;
+  login: (data: AuthLogin) => Promise<boolean>;
+  register: (data: AuthRegister) => Promise<boolean>;
+  logout: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType>(null!);
@@ -31,9 +33,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       const res = await api.login(data);
-      localStorage.setItem("access_token", res.access_token as never);
+      if (res.access_token) {
+        setAuthInCookies(res.access_token);
+        return true;
+      } else {
+        throw new Error("Something went wrong");
+      }
     } catch (error: unknown) {
       handleError(error as never);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -43,12 +51,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       const res = await api.register(data);
-      localStorage.setItem("access_token", res.access_token as never);
+      if (res.access_token) {
+        setAuthInCookies(res.access_token);
+        return true;
+      } else {
+        throw new Error("Something went wrong");
+      }
     } catch (error) {
       handleError(error as never);
+      return false;
     } finally {
       setLoading(false);
     }
+  }
+
+  async function logout() {
+    await removeAuthFromCookies();
   }
 
   function handleError(error: AuthError) {
@@ -75,7 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   }
 
   return (
-    <AuthContext.Provider value={{ loading, login, register }}>
+    <AuthContext.Provider value={{ loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );

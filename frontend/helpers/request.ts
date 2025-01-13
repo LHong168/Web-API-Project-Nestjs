@@ -1,4 +1,5 @@
 import { env } from "@/env.mjs";
+import { getAuthFromCookies } from "./cookies";
 
 export const getStaticURL = (path = "") => {
   return `${env.NEXT_PUBLIC_NESTJS_URL || "http://localhost:3001"}${path}`;
@@ -8,7 +9,7 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
   // Build request URL
   const requestUrl = getStaticURL(`/${path}`);
 
-  const jwtToken = localStorage.getItem("access_token");
+  const token = await getAuthFromCookies();
 
   // Trigger API call
   const response = await fetch(requestUrl, {
@@ -16,7 +17,7 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + jwtToken,
+      Authorization: "Bearer " + token?.value,
     },
     ...options,
   });

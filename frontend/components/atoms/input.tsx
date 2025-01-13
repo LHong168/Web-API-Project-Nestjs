@@ -7,6 +7,7 @@ import { useState } from "react";
 interface InputProps extends React.HTMLAttributes<HTMLInputElement> {
   placeholder?: string;
   error?: string;
+  disabled?: boolean;
 }
 
 export const Input: React.FC<InputProps> = ({ error, ...inputProps }) => {

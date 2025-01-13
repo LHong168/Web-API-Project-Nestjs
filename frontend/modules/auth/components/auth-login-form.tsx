@@ -6,15 +6,18 @@ import Link from "next/link";
 import { LoginFormData, useLoginForm } from "../hooks/use-login-form";
 import { Input, PasswordInput } from "@/components/atoms/input";
 import { useAuth } from "../hooks/use-auth";
+import { useRouter } from "next/navigation";
 
 export const AuthLoginForm: React.FC = () => {
   const { register, handleSubmit, formState } = useLoginForm();
   const { login, loading } = useAuth();
+  const router = useRouter();
 
   const { errors } = formState;
 
   async function onSubmit(data: LoginFormData) {
-    await login({ ...data });
+    const res = await login({ ...data });
+    if (res) router.push(ROUTES.DASHBOARD);
   }
 
   return (
