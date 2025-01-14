@@ -1,14 +1,13 @@
-import { getUsers } from "@/modules/dashboard/api";
-import { DashboardTable } from "@/modules/dashboard/components/dashboard-table";
-import { DashboardTitle } from "@/modules/dashboard/components/dashboard-title";
+'use client';
 
-export default async function Page() {
-  const data = await getUsers();
+import { DashboardTable } from '@/modules/dashboard/components/dashboard-table';
+import { DashboardTitle } from '@/modules/dashboard/components/dashboard-title';
 
+export default function Page() {
   return (
     <>
       <DashboardTitle />
-      <DashboardTable data={data} />
+      <DashboardTable />
     </>
   );
 }

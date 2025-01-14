@@ -1,133 +1,124 @@
-"use client";
+'use client';
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { api } from "./use-auth-request";
-import { isNetworkError } from "@/helpers/network-error";
-import { AuthLogin, AuthRegister, AuthError } from "../interface";
-import { useToast } from "@/hooks/use-toast";
-import { removeAuthFromCookies, setAuthInCookies } from "@/helpers/cookies";
-import { User } from "@/modules/dashboard/interface";
-export interface AuthUser {
-  id?: number;
-  username?: string;
-  email: string;
-  password: string;
-}
-
-interface Auth {
-  isAuthenticated: boolean;
-  user?: User | null;
-}
+import { createContext, useContext, useEffect, useState } from 'react';
+import { api, getRefreshAccessToken } from './use-auth-request';
+import { isNetworkError } from '@/helpers/network-error';
+import { AuthLogin, AuthRegister, AuthError, AccessTokenResponse } from '../interface';
+import { useToast } from '@/hooks/use-toast';
+import { removeAuthFromCookies, setAuthInCookies } from '@/helpers/cookies';
+import { User } from '@/modules/dashboard/interface';
+import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/config/routes';
+import { invalidateQuery } from '@/provider';
 
 interface AuthContextType {
   user?: User | null;
   loading: boolean;
   login: (data: AuthLogin) => Promise<boolean>;
   register: (data: AuthRegister) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
-export const AuthContext = createContext<AuthContextType>(null!);
+export const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
-  const [auth, setAuth] = useState<Auth>({ isAuthenticated: false });
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
-  async function login(data: AuthLogin) {
+  const handleAuthSuccess = async (res: AccessTokenResponse) => {
+    await setAuthInCookies(res);
+    setUser(await api.readMe());
+    invalidateQuery();
+  };
+
+  const login = async (data: AuthLogin): Promise<boolean> => {
+    setLoading(true);
     try {
-      setLoading(true);
       const res = await api.login(data);
-      if (res.access_token) {
-        setAuthInCookies(res.access_token);
-        setAuth((p) => ({ ...p, isAuthenticated: true }));
-        return true;
-      } else {
-        throw new Error("Something went wrong");
-      }
-    } catch (error: unknown) {
-      handleError(error as never);
-      return false;
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function register(data: AuthRegister) {
-    try {
-      setLoading(true);
-      const res = await api.register(data);
-      if (res.access_token) {
-        setAuthInCookies(res.access_token);
-        setAuth((p) => ({ ...p, isAuthenticated: true }));
-        return true;
-      } else {
-        throw new Error("Something went wrong");
-      }
+      if (!res) throw new Error('Login failed.');
+      await handleAuthSuccess(res);
+      return true;
     } catch (error) {
-      handleError(error as never);
+      handleError(error as AuthError);
       return false;
     } finally {
       setLoading(false);
     }
-  }
+  };
 
-  async function logout() {
-    await removeAuthFromCookies();
-    setAuth({ isAuthenticated: false, user: null });
-  }
+  const register = async (data: AuthRegister): Promise<boolean> => {
+    setLoading(true);
+    try {
+      const res = await api.register(data);
+      if (!res?.access_token) throw new Error('Registration failed.');
+      await handleAuthSuccess(res);
+      return true;
+    } catch (error) {
+      handleError(error as AuthError);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  function handleError(error: AuthError) {
-    if (isNetworkError(error))
+  const logout = async (): Promise<void> => {
+    try {
+      if (user?.id) await api.logout(user.id);
+    } finally {
+      await removeAuthFromCookies();
+      setUser(null);
+      router.replace(ROUTES.LOGIN);
+    }
+  };
+
+  const handleError = (error: AuthError) => {
+    if (isNetworkError(error)) {
       toast({
-        title: "Network Error: Please check your internet connection.",
-        variant: "destructive",
+        title: 'Network Error',
+        description: 'Please check your internet connection.',
+        variant: 'destructive'
       });
+      return;
+    }
 
-    if (error.statusCode === 401) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else
-      toast({
-        title: "Error",
-        description: "Something went wrong, please try again",
-        variant: "destructive",
-      });
-
+    toast({
+      title: 'Error',
+      description: error?.message || 'Something went wrong, please try again.',
+      variant: 'destructive'
+    });
     console.error(error);
-  }
+  };
+
+  const initializeAuth = async () => {
+    try {
+      setUser(await api.readMe());
+    } catch (error) {
+      console.error(error);
+      const newToken = await getRefreshAccessToken();
+      if (newToken) {
+        invalidateQuery();
+        setUser(await api.readMe());
+        return;
+      }
+      await removeAuthFromCookies();
+      setUser(null);
+      router.replace(ROUTES.LOGIN);
+    }
+  };
 
   useEffect(() => {
-    (async function checkAuth() {
-      try {
-        const user = await api.readMe();
-        if (user) setAuth((p) => ({ ...p, user }));
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [auth.isAuthenticated]);
+    initializeAuth();
+  }, []);
 
-  return (
-    <AuthContext.Provider
-      value={{ user: auth.user, loading, login, register, logout }}
-    >
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ user, loading, login, register, logout }}>{children}</AuthContext.Provider>;
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-
-  if (context === null) {
-    throw new Error("auth must be used within a AuthProvider");
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider.');
   }
-
   return context;
 };

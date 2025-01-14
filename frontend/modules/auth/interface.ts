@@ -1,5 +1,6 @@
 export interface AccessTokenResponse {
   access_token?: string | null;
+  refresh_token?: string | null;
 }
 
 export interface AuthRegister {

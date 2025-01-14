@@ -2,6 +2,9 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ConfigDto {
   @IsNotEmpty()
+  NODE_ENV: 'development' | 'production';
+
+  @IsNotEmpty()
   @IsNumber()
   PORT: number;
 
@@ -16,4 +19,10 @@ export class ConfigDto {
 
   @IsNotEmpty()
   JWT_EXPIRES_IN: string;
+
+  @IsNotEmpty()
+  JWT_REFRESH_SECRET: string;
+
+  @IsNotEmpty()
+  JWT_REFRESH_EXPIRES_IN: string;
 }

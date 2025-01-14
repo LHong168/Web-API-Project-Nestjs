@@ -1,13 +1,13 @@
 {
-  "name": "weduabroad",
+  "name": "nestjs",
   "private": true,
   "version": "1.0.0",
-  "description": "WEduAbroad - Study Abroad Consultancy",
-  "author": "OneWorld <info@oneworldcambodia.com> (https://oneworldsoftware.com/)",
+  "description": "Web API Project Assignment: User Management System with JWT Authentication NestJS",
+  "author": "Ly Hong",
   "license": "UNLICENSED",
   "scripts": {
     "develop:backend": "yarn --cwd backend start",
-    "develop:frontend": "wait-on http://localhost:8055/admin && yarn --cwd frontend dev",
+    "develop:frontend": "wait-on http://localhost:3001 && yarn --cwd frontend dev",
     "develop": "cross-env FORCE_COLOR=1 npm-run-all -l -p develop:*"
   },
   "devDependencies": {
