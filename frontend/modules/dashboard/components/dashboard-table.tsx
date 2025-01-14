@@ -63,7 +63,7 @@ export const DashboardTable: React.FC<{ data: User[] }> = ({ data }) => {
                   >
                     Edit
                   </Link>
-                  {x.id !== user?.id && <DeleteAlertDialog id={x.id} />}
+                  {user && x.id !== user.id && <DeleteAlertDialog id={x.id} />}
                 </div>
               </td>
             </tr>

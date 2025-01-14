@@ -7,6 +7,8 @@ import { AuthLogin, AuthRegister, AuthError } from "../interface";
 import { useToast } from "@/hooks/use-toast";
 import { removeAuthFromCookies, setAuthInCookies } from "@/helpers/cookies";
 import { User } from "@/modules/dashboard/interface";
+import { useRouter } from "next/navigation";
+import { ROUTES } from "@/config/routes";
 export interface AuthUser {
   id?: number;
   username?: string;
@@ -35,6 +37,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [auth, setAuth] = useState<Auth>({ isAuthenticated: false });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   async function login(data: AuthLogin) {
     try {
@@ -108,6 +111,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         const user = await api.readMe();
         if (user) setAuth((p) => ({ ...p, user }));
       } catch (error) {
+        removeAuthFromCookies();
+        router.replace(ROUTES.LOGIN);
         console.log(error);
       }
     })();
