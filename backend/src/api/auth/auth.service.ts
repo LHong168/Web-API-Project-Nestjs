@@ -6,8 +6,8 @@ import {
 import { UsersService } from '../users/users.service';
 import { isPasswordMatched } from 'utils/hash-password';
 import { JwtService } from '@nestjs/jwt';
-import { AuthenticateDto } from './auth.dto';
 import { Role } from '../../common/role/role.enum';
+import { AuthRegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -30,7 +30,7 @@ export class AuthService {
     };
   }
 
-  async signUp(authenticateDto: AuthenticateDto): Promise<any> {
+  async signUp(authenticateDto: AuthRegisterDto): Promise<any> {
     const user = await this.usersService.findByEmail(authenticateDto.email);
 
     if (user) return new ConflictException('User already exist');

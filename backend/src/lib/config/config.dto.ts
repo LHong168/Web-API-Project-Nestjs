@@ -2,6 +2,9 @@ import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class ConfigDto {
   @IsNotEmpty()
+  NODE_ENV: 'development' | 'production';
+
+  @IsNotEmpty()
   @IsNumber()
   PORT: number;
 
