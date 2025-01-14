@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { ROUTES } from "@/config/routes";
-import Link from "next/link";
-import { LoginFormData, useLoginForm } from "../hooks/use-login-form";
-import { Input, PasswordInput } from "@/components/atoms/input";
-import { useAuth } from "../hooks/use-auth";
-import { useRouter } from "next/navigation";
+import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/config/routes';
+import Link from 'next/link';
+import { LoginFormData, useLoginForm } from '../hooks/use-login-form';
+import { Input, PasswordInput } from '@/components/atoms/input';
+import { useAuth } from '../hooks/use-auth';
+import { useRouter } from 'next/navigation';
 
 export const AuthLoginForm: React.FC = () => {
   const { register, handleSubmit, formState } = useLoginForm();
@@ -22,16 +22,11 @@ export const AuthLoginForm: React.FC = () => {
 
   return (
     <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        label="Email"
-        {...register("email")}
-        error={errors.email?.message}
-        placeholder="username@gmail.com"
-      />
+      <Input label="Email" {...register('email')} error={errors.email?.message} placeholder="username@gmail.com" />
 
       <PasswordInput
         label="Password"
-        {...register("password")}
+        {...register('password')}
         error={errors.password?.message}
         placeholder="••••••••"
       />
@@ -41,11 +36,8 @@ export const AuthLoginForm: React.FC = () => {
       </Button>
 
       <p className="text-sm font-light text-gray-500 dark:text-gray-400">
-        Don&apos;t have an account yet?{" "}
-        <Link
-          href={ROUTES.REGISTER}
-          className="font-medium text-primary-600 hover:underline dark:text-primary-500"
-        >
+        Don&apos;t have an account yet?{' '}
+        <Link href={ROUTES.REGISTER} className="font-medium text-primary-600 hover:underline dark:text-primary-500">
           Sign up
         </Link>
       </p>

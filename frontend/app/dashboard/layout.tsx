@@ -1,4 +1,4 @@
-import { DashboardHeader } from "@/modules/dashboard/components/dashboard-header";
+import { DashboardHeader } from '@/modules/dashboard/components/dashboard-header';
 
 export default async function Layout({ children }: React.PropsWithChildren) {
   return (

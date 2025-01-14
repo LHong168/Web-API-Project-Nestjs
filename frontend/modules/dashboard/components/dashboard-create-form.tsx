@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import { Input, PasswordInput } from "@/components/atoms/input";
-import { CreateFormData, useCreateForm } from "../hooks/use-create-form";
-import { useState } from "react";
-import { createUsers } from "../api";
-import { useToast } from "@/hooks/use-toast";
-import { ROUTES } from "@/config/routes";
-import { useRouter } from "next/navigation";
-import { invalidateQuery } from "@/provider";
+import { Button } from '@/components/ui/button';
+import { Input, PasswordInput } from '@/components/atoms/input';
+import { CreateFormData, useCreateForm } from '../hooks/use-create-form';
+import { useState } from 'react';
+import { createUsers } from '../api';
+import { useToast } from '@/hooks/use-toast';
+import { ROUTES } from '@/config/routes';
+import { useRouter } from 'next/navigation';
+import { invalidateQuery } from '@/provider';
 
 export const DashboardCreateForm: React.FC = () => {
   const { register, handleSubmit, formState } = useCreateForm();
@@ -23,10 +23,10 @@ export const DashboardCreateForm: React.FC = () => {
       setLoading(true);
       await createUsers(data);
       invalidateQuery();
-      toast({ title: "Success", variant: "success" });
+      toast({ title: 'Success', variant: 'success' });
       router.push(ROUTES.DASHBOARD);
     } catch (e) {
-      toast({ title: "Something went wrong", variant: "destructive" });
+      toast({ title: 'Something went wrong', variant: 'destructive' });
       console.error(e);
     } finally {
       setLoading(false);
@@ -35,30 +35,20 @@ export const DashboardCreateForm: React.FC = () => {
 
   return (
     <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        label="Username"
-        {...register("username")}
-        error={errors.username?.message}
-        placeholder="Ex: John Doe"
-      />
+      <Input label="Username" {...register('username')} error={errors.username?.message} placeholder="Ex: John Doe" />
 
-      <Input
-        label="Email"
-        {...register("email")}
-        error={errors.email?.message}
-        placeholder="username@gmail.com"
-      />
+      <Input label="Email" {...register('email')} error={errors.email?.message} placeholder="username@gmail.com" />
 
       <PasswordInput
         label="Password"
-        {...register("password")}
+        {...register('password')}
         error={errors.password?.message}
         placeholder="••••••••"
       />
 
       <PasswordInput
         label="Confirm Password"
-        {...register("confirm_password")}
+        {...register('confirm_password')}
         error={errors.confirm_password?.message}
         placeholder="••••••••"
       />

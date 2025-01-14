@@ -27,5 +27,5 @@
     "**/node_modules": true,
     "**/dist": true
   },
-  "cSpell.words": []
+  "cSpell.words": ["clsx", "hookform", "nextjs", "tailwindcss", "valibot"]
 }
