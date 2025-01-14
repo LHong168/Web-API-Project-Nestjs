@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  Logger,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -10,6 +11,7 @@ import { User } from './entities/users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { hashPassword, isPasswordMatched } from 'utils/hash-password';
+import { Role } from '@/common/role/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +29,12 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  findAllUser(): Promise<User[]> {
+  async findAllUser(currentUser: User): Promise<User[]> {
+    if (currentUser.role === Role.USER) {
+      const user = await this.findByEmail(currentUser.email);
+      if (user) return [user];
+      return [];
+    }
     return this.userRepository.find();
   }
 
