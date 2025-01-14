@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -19,6 +20,9 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<User> {
+    const existUser = await this.findByEmail(createUserDto.email);
+    if (existUser) throw new ConflictException('User already Exist');
+
     const user: User = new User();
     user.email = createUserDto.email;
     user.username = createUserDto.username;
@@ -77,7 +81,7 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async updateUserRefreshToken(id: number, refreshToken: string) {
+  async updateUserRefreshToken(id: number, refreshToken: string | null) {
     const user = await this.userRepository.findOneBy({ id });
     return this.userRepository.save({ ...user, refreshToken });
   }

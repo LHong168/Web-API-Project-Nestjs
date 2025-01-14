@@ -27,12 +27,6 @@ export class AuthService {
 
     const tokens = this.generateTokens(payload);
 
-    // store the refresh token in the database
-    await this.usersService.updateUserRefreshToken(
-      user.id,
-      tokens.refresh_token,
-    );
-
     return tokens;
   }
 
@@ -50,16 +44,15 @@ export class AuthService {
 
     const tokens = this.generateTokens(payload);
 
-    // store the refresh token in the database
-    await this.usersService.updateUserRefreshToken(
-      payload.sub,
-      tokens.refresh_token,
-    );
-
     return tokens;
   }
 
-  generateTokens(payload: any) {
+  async logOut(userId: number): Promise<any> {
+    await this.usersService.updateUserRefreshToken(userId, null);
+    return { message: 'ok' };
+  }
+
+  async generateTokens(payload: any) {
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
       expiresIn: process.env.JWT_EXPIRES_IN,
@@ -70,14 +63,24 @@ export class AuthService {
       expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
     });
 
+    // store the refresh token in the database
+    await this.usersService.updateUserRefreshToken(payload.sub, refresh_token);
+
     return { access_token, refresh_token };
   }
 
   async validateRefreshToken(token: string) {
     try {
-      return this.jwtService.verify(token, {
+      const validateToken = this.jwtService.verify(token, {
         secret: process.env.REFRESH_TOKEN_SECRET,
       });
+
+      const user = await this.usersService.findByUserId(validateToken.sub);
+      if (!user || user.refreshToken !== token) {
+        throw new UnauthorizedException('Invalid or expired refresh token');
+      }
+
+      return validateToken;
     } catch (error) {
       throw new UnauthorizedException('Invalid refresh token');
     }

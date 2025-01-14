@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsAlphanumeric,
   IsEmail,
   IsEnum,
   IsNotEmpty,
@@ -18,9 +17,6 @@ export class CreateUserDto {
   })
   @IsNotEmpty()
   @MinLength(3, { message: 'Username must have atleast 3 characters.' })
-  @IsAlphanumeric('en-US', {
-    message: 'Username does not allow other than alpha numeric chars.',
-  })
   username: string;
 
   @ApiProperty({
@@ -45,6 +41,7 @@ export class CreateUserDto {
     description: 'The role of the user',
     example: 'USER | ADMIN',
   })
+  @IsOptional()
   @IsEnum(Role)
   role: Role;
 

@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Request,
   UseGuards,
@@ -44,17 +45,32 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @Post('logout/:id')
+  @UseGuards(AuthGuard)
+  @ApiOkResponse({ description: 'User Logout successfully' })
+  logOut(@Param('id') id: string): Promise<void> {
+    return this.authService.logOut(+id);
+  }
+
+  @HttpCode(HttpStatus.OK)
   @Get('me')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ description: 'User details' })
+  @ApiOkResponse({ description: 'Get user details' })
   readMe(@Request() req: RequestWithUser) {
     return this.userService.findByEmail(req.user.email);
   }
 
+  @HttpCode(HttpStatus.OK)
   @Post('refresh')
+  @ApiBearerAuth()
+  @ApiOkResponse({ description: 'Get and change refresh token' })
   async refresh(@Body('refreshToken') refreshToken: string) {
     const payload = await this.authService.validateRefreshToken(refreshToken);
-    return this.authService.generateTokens({ userId: payload.userId });
+    return this.authService.generateTokens({
+      sub: payload.sub,
+      email: payload.email,
+      role: payload.role,
+    });
   }
 }
