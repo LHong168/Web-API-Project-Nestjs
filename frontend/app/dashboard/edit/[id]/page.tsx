@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/config/routes";
-import { getUserById } from "@/modules/dashboard/api";
 import { DashboardEditForm } from "@/modules/dashboard/components/dashboard-edit-form";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -11,7 +10,6 @@ interface PageProps {
 
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
-  const data = await getUserById(+id);
 
   return (
     <div className="max-w-3xl mx-auto">
@@ -26,7 +24,7 @@ export default async function Page({ params }: PageProps) {
         <h1 className="text-2xl font-bold">Edit</h1>
       </div>
 
-      <DashboardEditForm data={data} />
+      <DashboardEditForm id={+id} />
     </div>
   );
 }

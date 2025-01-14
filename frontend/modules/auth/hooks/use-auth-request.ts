@@ -8,9 +8,11 @@ export const api = {
     fetchAPI<AccessTokenResponse>("auth/login", getRequestOption(body)),
   register: async (body: AuthRegister) =>
     fetchAPI<AccessTokenResponse>("auth/register", getRequestOption(body)),
+  logout: async (id: number) =>
+    fetchAPI<AccessTokenResponse>(`auth/logout/${id}`, { method: "POST" }),
   readMe: async () => fetchAPI<User>("auth/me", { method: "GET" }),
   refreshToken: async (refreshToken: string) =>
-    fetchAPI<AccessTokenResponse>("/auth/refresh", {
+    fetchAPI<AccessTokenResponse>("auth/refresh", {
       method: "POST",
       body: JSON.stringify({ refreshToken }),
     }),

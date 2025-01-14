@@ -7,12 +7,10 @@ const AUTH_TOKEN_KEY = "auth_token";
 
 export const getAuthFromCookies =
   async (): Promise<AccessTokenResponse | null> => {
-    const cookieStore = await cookies();
-    const authTokens = cookieStore.get(AUTH_TOKEN_KEY);
-    if (!authTokens) return null;
-    console.log(typeof authTokens.value);
-    console.log(authTokens.value);
     try {
+      const cookieStore = await cookies();
+      const authTokens = cookieStore.get(AUTH_TOKEN_KEY);
+      if (!authTokens) return null;
       return JSON.parse(authTokens.value);
     } catch (error) {
       console.error("Failed to parse auth tokens from cookies", error);

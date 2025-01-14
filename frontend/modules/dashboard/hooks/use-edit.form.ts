@@ -1,7 +1,6 @@
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
-import { User } from "../interface";
 
 interface ErrorPasswordValidationProps {
   empty: string;
@@ -70,7 +69,7 @@ const EditFormSchema = (e: ErrorMessage) =>
 
 export type EditFormData = v.InferInput<ReturnType<typeof EditFormSchema>>;
 
-export const useEditForm = (data: Omit<User, "password">) => {
+export const useEditForm = () => {
   return useForm<EditFormData>({
     resolver: valibotResolver(
       EditFormSchema({
@@ -85,6 +84,5 @@ export const useEditForm = (data: Omit<User, "password">) => {
         confirm_mismatch: "Passwords do not match.",
       })
     ),
-    defaultValues: { ...data, password: "" },
   });
 };

@@ -26,7 +26,6 @@ export async function getUserById(id: number) {
     const res = fetchAPI<User>(`users/${id}`, { method: "GET" });
     return res;
   } catch (error) {
-    console.log("hello");
     console.error("Error fetching user:", error);
     return {} as never;
   }
