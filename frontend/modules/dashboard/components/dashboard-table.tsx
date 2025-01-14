@@ -16,8 +16,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteUsers } from "../api";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/modules/auth/hooks/use-auth";
 
 export const DashboardTable: React.FC<{ data: User[] }> = ({ data }) => {
+  const { user } = useAuth();
+
   return (
     <div className="relative overflow-x-auto">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -60,7 +63,7 @@ export const DashboardTable: React.FC<{ data: User[] }> = ({ data }) => {
                   >
                     Edit
                   </Link>
-                  {x.role !== "ADMIN" && <DeleteAlertDialog id={x.id} />}
+                  {x.id !== user?.id && <DeleteAlertDialog id={x.id} />}
                 </div>
               </td>
             </tr>

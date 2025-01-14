@@ -1,8 +1,20 @@
-import { PasswordValidation } from "@/modules/auth/hooks/use-login-form";
 import { valibotResolver } from "@hookform/resolvers/valibot";
 import { useForm } from "react-hook-form";
 import * as v from "valibot";
 import { User } from "../interface";
+
+interface ErrorPasswordValidationProps {
+  empty: string;
+  min: string;
+}
+
+export const PasswordValidation = (e: ErrorPasswordValidationProps) =>
+  v.optional(
+    v.pipe(
+      v.string(e.empty),
+      v.check((value) => value === "" || value.length >= 8, e.min)
+    )
+  );
 
 interface ErrorMessage {
   email_empty: string;
@@ -33,10 +45,10 @@ const EditFormSchema = (e: ErrorMessage) =>
         empty: e.password_empty,
         min: e.password_min,
       }),
-      confirm_password: v.pipe(
-        v.string(e.confirm_empty),
-        v.nonEmpty(e.confirm_empty)
-      ),
+      confirm_password: PasswordValidation({
+        empty: e.password_empty,
+        min: e.password_min,
+      }),
     }),
     v.forward(
       v.partialCheck(

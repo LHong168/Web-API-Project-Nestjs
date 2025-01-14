@@ -4,13 +4,15 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Logger,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthenticateDto } from './auth.dto';
 import { UsersService } from '../users/users.service';
-import { RequestWithUser } from '@/common/guards/authenticate.guard';
+import { AuthGuard, RequestWithUser } from '@/common/guards/authenticate.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -33,6 +35,7 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Get('me')
+  @UseGuards(AuthGuard)
   readMe(@Request() req: RequestWithUser) {
     return this.userService.findByEmail(req.user.email);
   }

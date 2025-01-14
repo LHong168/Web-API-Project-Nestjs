@@ -1,12 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { api } from "./use-auth-request";
 import { isNetworkError } from "@/helpers/network-error";
 import { AuthLogin, AuthRegister, AuthError } from "../interface";
 import { useToast } from "@/hooks/use-toast";
 import { removeAuthFromCookies, setAuthInCookies } from "@/helpers/cookies";
-
+import { User } from "@/modules/dashboard/interface";
 export interface AuthUser {
   id?: number;
   username?: string;
@@ -14,7 +14,13 @@ export interface AuthUser {
   password: string;
 }
 
+interface Auth {
+  isAuthenticated: boolean;
+  user?: User | null;
+}
+
 interface AuthContextType {
+  user?: User | null;
   loading: boolean;
   login: (data: AuthLogin) => Promise<boolean>;
   register: (data: AuthRegister) => Promise<boolean>;
@@ -26,6 +32,7 @@ export const AuthContext = createContext<AuthContextType>(null!);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [auth, setAuth] = useState<Auth>({ isAuthenticated: false });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
 
@@ -35,6 +42,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await api.login(data);
       if (res.access_token) {
         setAuthInCookies(res.access_token);
+        setAuth((p) => ({ ...p, isAuthenticated: true }));
         return true;
       } else {
         throw new Error("Something went wrong");
@@ -53,6 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const res = await api.register(data);
       if (res.access_token) {
         setAuthInCookies(res.access_token);
+        setAuth((p) => ({ ...p, isAuthenticated: true }));
         return true;
       } else {
         throw new Error("Something went wrong");
@@ -67,6 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   async function logout() {
     await removeAuthFromCookies();
+    setAuth({ isAuthenticated: false, user: null });
   }
 
   function handleError(error: AuthError) {
@@ -92,8 +102,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     console.error(error);
   }
 
+  useEffect(() => {
+    (async function checkAuth() {
+      try {
+        const user = await api.readMe();
+        if (user) setAuth((p) => ({ ...p, user }));
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, [auth.isAuthenticated]);
+
   return (
-    <AuthContext.Provider value={{ loading, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user: auth.user, loading, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
