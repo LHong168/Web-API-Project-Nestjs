@@ -14,7 +14,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from 'src/common/guards/authenticate.guard';
 import { Roles } from '../../common/role/role.decorator';
 import { Role } from '../../common/role/role.enum';
-import { RolesGuard } from '../../common/role/role.guard';
+import { RolesGuard } from '@/common/guards/role.guard';
 
 @Controller('users')
 export class UsersController {
