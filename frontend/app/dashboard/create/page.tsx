@@ -1,6 +1,6 @@
-import { Input, PasswordInput } from "@/components/atoms/input";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/config/routes";
+import { DashboardCreateForm } from "@/modules/dashboard/components/dashboard-create-form";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -18,36 +18,7 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Create</h1>
       </div>
 
-      <form className="space-y-4 md:space-y-6">
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Username
-          </label>
-          <Input placeholder="Ex: John Doe" />
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Your email
-          </label>
-          <Input placeholder="username@gmail.com" />
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Password
-          </label>
-          <PasswordInput placeholder="••••••••" />
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Confirm password
-          </label>
-          <PasswordInput placeholder="••••••••" />
-        </div>
-
-        <Button type="submit" className="w-full">
-          Submit
-        </Button>
-      </form>
+      <DashboardCreateForm />
     </div>
   );
 }

@@ -1,6 +1,21 @@
+"use client";
+
 import { ROUTES } from "@/config/routes";
 import Link from "next/link";
 import { User } from "../interface";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { deleteUsers } from "../api";
+import { useToast } from "@/hooks/use-toast";
 
 export const DashboardTable: React.FC<{ data: User[] }> = ({ data }) => {
   return (
@@ -45,12 +60,7 @@ export const DashboardTable: React.FC<{ data: User[] }> = ({ data }) => {
                   >
                     Edit
                   </Link>
-                  <Link
-                    href="#"
-                    className="text-red-500 hover:underline underline-offset-2"
-                  >
-                    Delete
-                  </Link>
+                  {x.role !== "ADMIN" && <DeleteAlertDialog id={x.id} />}
                 </div>
               </td>
             </tr>
@@ -58,5 +68,40 @@ export const DashboardTable: React.FC<{ data: User[] }> = ({ data }) => {
         </tbody>
       </table>
     </div>
+  );
+};
+
+const DeleteAlertDialog: React.FC<{ id: number }> = ({ id }) => {
+  const { toast } = useToast();
+
+  async function handleDelete() {
+    await deleteUsers(id);
+    toast({ title: "Success", variant: "success" });
+  }
+
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger className="text-red-500 hover:underline underline-offset-2">
+        Delete
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            className="bg-red-500 hover:bg-red-600"
+            onClick={handleDelete}
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };

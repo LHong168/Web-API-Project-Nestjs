@@ -1,10 +1,18 @@
-import { Input, PasswordInput } from "@/components/atoms/input";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/config/routes";
+import { getUserById } from "@/modules/dashboard/api";
+import { DashboardEditForm } from "@/modules/dashboard/components/dashboard-edit-form";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function Page() {
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function Page({ params }: PageProps) {
+  const { id } = await params;
+  const data = await getUserById(+id);
+
   return (
     <div className="max-w-3xl mx-auto">
       <Button className="flex mt-5 w-fit px-0 text-base" variant="link" asChild>
@@ -18,36 +26,7 @@ export default function Page() {
         <h1 className="text-2xl font-bold">Edit</h1>
       </div>
 
-      <form className="space-y-4 md:space-y-6">
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Username
-          </label>
-          <Input placeholder="Ex: John Doe" />
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Your email
-          </label>
-          <Input placeholder="username@gmail.com" disabled />
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Password
-          </label>
-          <PasswordInput placeholder="••••••••" />
-        </div>
-        <div>
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Confirm password
-          </label>
-          <PasswordInput placeholder="••••••••" />
-        </div>
-
-        <Button type="submit" className="w-full">
-          Submit
-        </Button>
-      </form>
+      <DashboardEditForm data={data} />
     </div>
   );
 }

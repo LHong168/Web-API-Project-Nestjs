@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/config/routes";
-import { getUsers } from "@/modules/dashboard/api/get-user";
+import { getUsers } from "@/modules/dashboard/api";
 import { DashboardTable } from "@/modules/dashboard/components/dashboard-table";
 import Link from "next/link";
 

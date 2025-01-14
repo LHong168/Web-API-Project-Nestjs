@@ -13,7 +13,7 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
 
   // Trigger API call
   const response = await fetch(requestUrl, {
-    next: { revalidate: 300, tags: ["api"] },
+    next: { revalidate: 0, tags: ["api"] },
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
 
   // Handle response
   if (!response.ok) {
-    throw await response.json();
+    throw new Error(`An error occurred please try again`);
   }
 
   return response.json() as T;
