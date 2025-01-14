@@ -77,6 +77,11 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
+  async updateUserRefreshToken(id: number, refreshToken: string) {
+    const user = await this.userRepository.findOneBy({ id });
+    return this.userRepository.save({ ...user, refreshToken });
+  }
+
   removeUser(id: number): Promise<{ affected?: number | null }> {
     return this.userRepository.delete(id);
   }

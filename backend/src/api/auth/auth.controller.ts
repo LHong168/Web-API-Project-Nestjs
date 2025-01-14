@@ -51,4 +51,10 @@ export class AuthController {
   readMe(@Request() req: RequestWithUser) {
     return this.userService.findByEmail(req.user.email);
   }
+
+  @Post('refresh')
+  async refresh(@Body('refreshToken') refreshToken: string) {
+    const payload = await this.authService.validateRefreshToken(refreshToken);
+    return this.authService.generateTokens({ userId: payload.userId });
+  }
 }

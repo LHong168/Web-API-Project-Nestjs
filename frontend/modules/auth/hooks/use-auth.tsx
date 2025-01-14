@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { api } from "./use-auth-request";
+import { api, getRefreshAccessToken } from "./use-auth-request";
 import { isNetworkError } from "@/helpers/network-error";
 import { AuthLogin, AuthRegister, AuthError } from "../interface";
 import { useToast } from "@/hooks/use-toast";
@@ -43,8 +43,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     try {
       setLoading(true);
       const res = await api.login(data);
-      if (res.access_token) {
-        setAuthInCookies(res.access_token);
+      console.log(!!res);
+      if (!!res) {
+        setAuthInCookies({ ...res });
         setAuth((p) => ({ ...p, isAuthenticated: true }));
         return true;
       } else {
@@ -63,7 +64,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       setLoading(true);
       const res = await api.register(data);
       if (res.access_token) {
-        setAuthInCookies(res.access_token);
+        setAuthInCookies({ ...res });
         setAuth((p) => ({ ...p, isAuthenticated: true }));
         return true;
       } else {
@@ -109,11 +110,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     (async function checkAuth() {
       try {
         const user = await api.readMe();
-        if (user) setAuth((p) => ({ ...p, user }));
+        if (user) {
+          setAuth((p) => ({ ...p, user }));
+        }
       } catch (error) {
-        removeAuthFromCookies();
+        if (!auth.isAuthenticated && !auth.user) return;
+
+        const newToken = await getRefreshAccessToken();
+        if (newToken) {
+          setAuth((p) => ({ ...p, isAuthenticated: true }));
+          return;
+        }
+
+        await removeAuthFromCookies();
         router.replace(ROUTES.LOGIN);
-        console.log(error);
+        console.error(error);
       }
     })();
   }, [auth.isAuthenticated]);

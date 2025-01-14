@@ -17,7 +17,7 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
     headers: {
       "Access-Control-Allow-Origin": "*",
       "Content-Type": "application/json",
-      Authorization: "Bearer " + token?.value,
+      Authorization: "Bearer " + token?.access_token,
     },
     ...options,
   });

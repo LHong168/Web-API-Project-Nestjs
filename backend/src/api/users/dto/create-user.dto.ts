@@ -4,6 +4,7 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   Matches,
   MinLength,
 } from 'class-validator';
@@ -46,4 +47,12 @@ export class CreateUserDto {
   })
   @IsEnum(Role)
   role: Role;
+
+  @ApiProperty({
+    description: 'Optional refresh token for the user',
+    example: 'some_refresh_token_string',
+    required: false,
+  })
+  @IsOptional()
+  refreshToken?: string;
 }
