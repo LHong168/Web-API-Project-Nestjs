@@ -23,6 +23,8 @@ export const PasswordInput: React.FC<InputProps> = (props) => {
   const { error, ...inputProps } = props;
   const [isShow, setShow] = useState(false);
 
+  const EyeComponent = isShow ? EyeOff : Eye;
+
   return (
     <div className="space-y-2">
       <div className="relative">
@@ -35,7 +37,7 @@ export const PasswordInput: React.FC<InputProps> = (props) => {
           className="absolute inset-y-0 right-3 flex items-center cursor-pointer"
           onClick={() => setShow((prev) => !prev)}
         >
-          {isShow ? <EyeOff /> : <Eye />}
+          <EyeComponent className="text-gray-600" />
         </div>
       </div>
       {error && <small className="text-red-500 text-xs">{error}</small>}
