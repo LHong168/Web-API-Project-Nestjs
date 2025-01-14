@@ -22,26 +22,19 @@ export const AuthLoginForm: React.FC = () => {
 
   return (
     <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-          Your email
-        </label>
-        <Input
-          {...register("email")}
-          error={errors.email?.message}
-          placeholder="username@gmail.com"
-        />
-      </div>
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-          Password
-        </label>
-        <PasswordInput
-          {...register("password")}
-          error={errors.password?.message}
-          placeholder="••••••••"
-        />
-      </div>
+      <Input
+        label="Email"
+        {...register("email")}
+        error={errors.email?.message}
+        placeholder="username@gmail.com"
+      />
+
+      <PasswordInput
+        label="Password"
+        {...register("password")}
+        error={errors.password?.message}
+        placeholder="••••••••"
+      />
 
       <Button type="submit" className="w-full" disabled={loading}>
         Sign in
