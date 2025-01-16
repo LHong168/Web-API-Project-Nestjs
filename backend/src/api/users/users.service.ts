@@ -11,9 +11,8 @@ import { hashPassword, isPasswordMatched } from 'utils/hash-password';
 
 import { Role } from '@/common/role/role.enum';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/users.entity';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Injectable()
 export class UsersService {
@@ -27,7 +26,7 @@ export class UsersService {
     user.email = createUserDto.email;
     user.username = createUserDto.username;
     user.password = await hashPassword(createUserDto.password);
-    user.role = createUserDto.role || Role.USER;
+    user.role = Role.USER;
 
     return this.userRepository.save(user);
   }
