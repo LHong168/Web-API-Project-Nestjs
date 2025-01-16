@@ -5,8 +5,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 
 import { ROUTES } from '@/config/routes';
 import { removeAuthFromCookies, setAuthInCookies } from '@/helpers/cookies';
-import { isNetworkError } from '@/helpers/network-error';
-import { useToast } from '@/hooks/use-toast';
+import { useError } from '@/hooks/use-error';
 import { User } from '@/modules/dashboard/interface';
 import { invalidateQuery } from '@/provider';
 
@@ -26,7 +25,7 @@ export const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [auth, setAuth] = useState<{ isAuth: boolean; user: User | null }>({ isAuth: false, user: null });
   const [loading, setLoading] = useState(false);
-  const { toast } = useToast();
+  const { handleError } = useError();
   const router = useRouter();
 
   const handleAuthSuccess = async (res: AccessTokenResponse) => {
@@ -74,22 +73,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAuth({ isAuth: false, user: null });
       router.replace(ROUTES.LOGIN);
     }
-  };
-
-  const handleError = (error: unknown) => {
-    if (isNetworkError(error)) {
-      toast({
-        title: 'Network Error',
-        description: 'Please check your internet connection.',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    if (error instanceof Error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
-
-    // eslint-disable-next-line no-console
-    console.error(error);
   };
 
   const initializeAuth = async () => {
