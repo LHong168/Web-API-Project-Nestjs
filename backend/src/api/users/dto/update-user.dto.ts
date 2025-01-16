@@ -4,7 +4,7 @@ import { IsOptional, Matches, ValidateIf } from 'class-validator';
 import { passwordRegEx } from 'utils/helpers';
 import { CreateUserDto } from './create-user.dto';
 
-export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password'])) {
+export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'role'])) {
   @IsOptional()
   @ValidateIf((_, value) => value !== '')
   @Matches(passwordRegEx, { message: `Password must contain at least one number and be at least 8 characters long` })
