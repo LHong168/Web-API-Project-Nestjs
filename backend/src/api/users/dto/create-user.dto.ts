@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, Matches, MinLength } from 'class-validator';
+import { Role } from 'src/common/role/role.enum';
 import { passwordRegEx } from 'utils/helpers';
 
 export class CreateUserDto {
@@ -18,6 +19,11 @@ export class CreateUserDto {
   @Matches(passwordRegEx, { message: 'Password must be at least 8 characters long.' })
   @ApiProperty({ description: 'The password of the User', example: 'Password@123' })
   password: string;
+
+  @IsOptional()
+  @IsEnum(Role)
+  @ApiProperty({ description: 'The role of the user', example: 'USER' })
+  role: Role;
 
   @IsOptional()
   @IsString()

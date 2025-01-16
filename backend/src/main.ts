@@ -20,7 +20,7 @@ async function bootstrap() {
       whitelist: true,
       transform: true,
       forbidNonWhitelisted: false,
-      errorHttpStatusCode: 422
+      errorHttpStatusCode: 400
     })
   );
 

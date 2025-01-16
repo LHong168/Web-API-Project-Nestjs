@@ -4,6 +4,7 @@ import { isPasswordMatched } from 'utils/hash-password';
 
 import { UsersService } from '../users/users.service';
 import { AuthRegisterDto } from './dto/register.dto';
+import { Role } from '@/common/role/role.enum';
 
 @Injectable()
 export class AuthService {
@@ -31,7 +32,7 @@ export class AuthService {
 
     if (user) throw new ConflictException('User already exists');
 
-    const newUser = await this.usersService.createUser({ ...authenticateDto });
+    const newUser = await this.usersService.createUser({ ...authenticateDto, role: Role.USER });
 
     const payload = { sub: newUser.id, id: newUser.id, email: newUser.email, role: newUser.role };
 
