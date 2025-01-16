@@ -1,15 +1,15 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, Matches } from 'class-validator';
-
-export const passwordRegEx = /^(?=.*\d)[A-Za-z\d]{8,}$/;
+import { passwordRegEx } from 'utils/helpers';
 
 export class AuthLoginDto {
   @IsNotEmpty()
   @IsEmail()
+  @ApiProperty({ example: 'john.doe@example.com' })
   email: string;
 
   @IsNotEmpty()
-  @Matches(passwordRegEx, {
-    message: `Password must contain at least one number and be at least 8 characters long`
-  })
+  @Matches(passwordRegEx, { message: 'Password must be at least 8 characters long.' })
+  @ApiProperty({ example: 'Password@123' })
   password: string;
 }

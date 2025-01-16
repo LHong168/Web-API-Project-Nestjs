@@ -27,7 +27,7 @@ export class UsersService {
     user.email = createUserDto.email;
     user.username = createUserDto.username;
     user.password = await hashPassword(createUserDto.password);
-    user.role = createUserDto.role;
+    user.role = createUserDto.role || Role.USER;
 
     return this.userRepository.save(user);
   }
@@ -60,7 +60,7 @@ export class UsersService {
 
     // Validate current password if provided and user has existing password
     if (updateUserDto.password && !isPasswordMatched(updateUserDto.password, user.password)) {
-      throw new BadRequestException('Invalid Password');
+      throw new UnauthorizedException('Invalid Password');
     }
 
     // Update password if new password is provided
