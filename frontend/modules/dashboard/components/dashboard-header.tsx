@@ -1,9 +1,10 @@
 'use client';
 
-import { ROUTES } from '@/config/routes';
-import { useAuth } from '@/modules/auth/hooks/use-auth';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
+import { ROUTES } from '@/config/routes';
+import { useAuth } from '@/modules/auth/hooks/use-auth';
 
 export const DashboardHeader: React.FC = () => {
   const { logout } = useAuth();

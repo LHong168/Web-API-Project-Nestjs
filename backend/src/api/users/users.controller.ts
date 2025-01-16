@@ -1,14 +1,13 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { AuthGuard, RequestWithUser } from 'src/common/guards/authenticate.guard';
 
 import { RolesGuard } from '@/common/guards/role.guard';
 
 import { Roles } from '../../common/role/role.decorator';
 import { Role } from '../../common/role/role.enum';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
+import { CreateUserDto, UpdateUserDto } from './dto';
 
 @Controller('users')
 export class UsersController {
@@ -16,6 +15,7 @@ export class UsersController {
 
   @Post()
   @ApiBody({ type: CreateUserDto })
+  @ApiOperation({ summary: 'Create user' })
   @ApiCreatedResponse({ description: 'User created successfully' })
   create(@Body() createUserDto: CreateUserDto) {
     return this.userService.createUser(createUserDto);
@@ -24,7 +24,8 @@ export class UsersController {
   @Get()
   @UseGuards(AuthGuard, RolesGuard)
   @ApiBearerAuth()
-  @ApiOkResponse({ description: 'List of users' })
+  @ApiOperation({ summary: 'Get all Users' })
+  @ApiOkResponse({ description: 'Get a list of users' })
   findAll(@Request() req: RequestWithUser) {
     return this.userService.findAllUser(req.user);
   }
@@ -32,6 +33,7 @@ export class UsersController {
   @Get(':id')
   @UseGuards(AuthGuard)
   @ApiParam({ name: 'id', description: 'User ID' })
+  @ApiOperation({ summary: 'Get user details' })
   @ApiOkResponse({ description: 'User details' })
   findOne(@Param('id') id: string) {
     return this.userService.findByUserId(+id);
@@ -50,7 +52,7 @@ export class UsersController {
   @Roles(Role.ADMIN)
   @UseGuards(AuthGuard, RolesGuard)
   @ApiParam({ name: 'id', description: 'User ID' })
-  @ApiOkResponse({ description: 'Deletion success' })
+  @ApiOkResponse({ description: 'Deletion successful' })
   remove(@Param('id') id: string) {
     return this.userService.removeUser(+id);
   }

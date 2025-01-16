@@ -20,7 +20,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid User Credential.');
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.role };
+    const payload = { sub: user.id, id: user.id, email: user.email, role: user.role };
 
     const tokens = this.generateTokens(payload);
 
@@ -32,12 +32,9 @@ export class AuthService {
 
     if (user) throw new ConflictException('User already exists');
 
-    const newUser = await this.usersService.createUser({
-      ...authenticateDto,
-      role: Role.USER
-    });
+    const newUser = await this.usersService.createUser({ ...authenticateDto });
 
-    const payload = { sub: newUser.id, email: newUser.email };
+    const payload = { sub: newUser.id, id: newUser.id, email: newUser.email, role: newUser.role };
 
     const tokens = this.generateTokens(payload);
 
@@ -46,7 +43,7 @@ export class AuthService {
 
   async logOut(userId: number): Promise<any> {
     await this.usersService.updateUserRefreshToken(userId, null);
-    return { message: 'ok' };
+    return { message: 'User Logout successfully' };
   }
 
   async generateTokens(payload: any) {

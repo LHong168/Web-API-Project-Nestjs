@@ -1,15 +1,17 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState } from 'react';
-import { api, getRefreshAccessToken } from './use-auth-request';
-import { isNetworkError } from '@/helpers/network-error';
-import { AuthLogin, AuthRegister, AuthError, AccessTokenResponse } from '../interface';
-import { useToast } from '@/hooks/use-toast';
-import { removeAuthFromCookies, setAuthInCookies } from '@/helpers/cookies';
-import { User } from '@/modules/dashboard/interface';
 import { useRouter } from 'next/navigation';
+import { createContext, useContext, useEffect, useState } from 'react';
+
 import { ROUTES } from '@/config/routes';
+import { removeAuthFromCookies, setAuthInCookies } from '@/helpers/cookies';
+import { isNetworkError } from '@/helpers/network-error';
+import { useToast } from '@/hooks/use-toast';
+import { User } from '@/modules/dashboard/interface';
 import { invalidateQuery } from '@/provider';
+
+import { AccessTokenResponse, AuthError, AuthLogin, AuthRegister } from '../interface';
+import { api, getRefreshAccessToken } from './use-auth-request';
 
 interface AuthContextType {
   user?: User | null;
@@ -65,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async (): Promise<void> => {
     try {
-      if (user?.id) await api.logout(user.id);
+      if (user?.id) await api.logout();
     } finally {
       await removeAuthFromCookies();
       setUser(null);
