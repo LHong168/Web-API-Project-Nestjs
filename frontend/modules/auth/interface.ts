@@ -13,9 +13,3 @@ export interface AuthLogin {
   email: string;
   password: string;
 }
-
-export interface AuthError {
-  error: string;
-  message: string;
-  statusCode: number;
-}

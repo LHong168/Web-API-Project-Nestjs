@@ -1,5 +1,4 @@
 import { env } from '@/env.mjs';
-import { AuthError } from '@/modules/auth/interface';
 
 import { getAuthFromCookies } from './cookies';
 
@@ -26,7 +25,7 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
 
   // Handle response
   if (!response.ok) {
-    const res = (await response.json()) as AuthError;
+    const res = (await response.json()) as ResponseError;
     throw new Error(`${res.message}`);
   }
 
