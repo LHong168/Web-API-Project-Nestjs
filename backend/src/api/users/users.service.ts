@@ -11,8 +11,8 @@ import { hashPassword, isPasswordMatched } from 'utils/hash-password';
 
 import { Role } from '@/common/role/role.enum';
 
-import { User } from './entities/users.entity';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { User } from './entities/users.entity';
 
 @Injectable()
 export class UsersService {

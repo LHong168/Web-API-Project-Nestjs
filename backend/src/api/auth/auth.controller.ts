@@ -1,11 +1,11 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation } from '@nestjs/swagger';
 
 import { AuthGuard, RequestWithUser } from '@/common/guards/authenticate.guard';
 
 import { UsersService } from '../users/users.service';
 import { AuthService } from './auth.service';
-import { ResponseTokenDto, AuthLoginDto, AuthRegisterDto, BodyTokenDto } from './dto';
+import { AuthLoginDto, AuthRegisterDto, BodyTokenDto, ResponseTokenDto } from './dto';
 
 @Controller('auth')
 export class AuthController {

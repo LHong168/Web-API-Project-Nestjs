@@ -6,8 +6,8 @@ import { RolesGuard } from '@/common/guards/role.guard';
 
 import { Roles } from '../../common/role/role.decorator';
 import { Role } from '../../common/role/role.enum';
-import { UsersService } from './users.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {

@@ -2,6 +2,7 @@ import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, Matches, ValidateIf } from 'class-validator';
 import { passwordRegEx } from 'utils/helpers';
+
 import { CreateUserDto } from './create-user.dto';
 
 export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'role'])) {

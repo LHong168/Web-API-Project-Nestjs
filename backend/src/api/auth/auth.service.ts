@@ -2,9 +2,10 @@ import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/co
 import { JwtService } from '@nestjs/jwt';
 import { isPasswordMatched } from 'utils/hash-password';
 
+import { Role } from '@/common/role/role.enum';
+
 import { UsersService } from '../users/users.service';
 import { AuthRegisterDto } from './dto/register.dto';
-import { Role } from '@/common/role/role.enum';
 
 @Injectable()
 export class AuthService {
