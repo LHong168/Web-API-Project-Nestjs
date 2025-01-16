@@ -1,15 +1,17 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Input, PasswordInput } from '@/components/atoms/input';
-import { EditFormData, useEditForm } from '../hooks/use-edit.form';
-import { useEffect, useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { updateUsers } from '../api';
-import { ROUTES } from '@/config/routes';
 import { useRouter } from 'next/navigation';
-import { useGetSingleUser } from '../hooks/use-get-single-user';
+import { useEffect, useState } from 'react';
+
+import { Input, PasswordInput } from '@/components/atoms/input';
+import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/config/routes';
+import { useToast } from '@/hooks/use-toast';
 import { invalidateQuery } from '@/provider';
+
+import { updateUsers } from '../api';
+import { EditFormData, useEditForm } from '../hooks/use-edit.form';
+import { useGetSingleUser } from '../hooks/use-get-single-user';
 
 export const DashboardEditForm: React.FC<{ id: number }> = ({ id }) => {
   const { data } = useGetSingleUser(id);
@@ -36,6 +38,7 @@ export const DashboardEditForm: React.FC<{ id: number }> = ({ id }) => {
       router.push(ROUTES.DASHBOARD);
     } catch (error) {
       toast({ title: 'Something went wrong', variant: 'destructive' });
+      // eslint-disable-next-line no-console
       console.error(error);
     } finally {
       setLoading(false);
@@ -50,14 +53,14 @@ export const DashboardEditForm: React.FC<{ id: number }> = ({ id }) => {
 
       <PasswordInput
         label="Password"
-        {...register('newPassword')}
+        {...register('password')}
         error={errors.newPassword?.message}
         placeholder="••••••••"
       />
 
       <PasswordInput
         label="New Password"
-        {...register('password')}
+        {...register('newPassword')}
         error={errors.password?.message}
         placeholder="••••••••"
       />

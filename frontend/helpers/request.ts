@@ -1,4 +1,6 @@
 import { env } from '@/env.mjs';
+import { AuthError } from '@/modules/auth/interface';
+
 import { getAuthFromCookies } from './cookies';
 
 export const getStaticURL = (path = '') => {
@@ -24,7 +26,8 @@ export const fetchAPI = async <T>(path: string, options = {}) => {
 
   // Handle response
   if (!response.ok) {
-    throw new Error(`An error occurred please try again`);
+    const res = (await response.json()) as AuthError;
+    throw new Error(`${res.message}`);
   }
 
   return response.json() as T;

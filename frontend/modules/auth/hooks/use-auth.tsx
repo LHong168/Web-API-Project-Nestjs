@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 import { User } from '@/modules/dashboard/interface';
 import { invalidateQuery } from '@/provider';
 
-import { AccessTokenResponse, AuthError, AuthLogin, AuthRegister } from '../interface';
+import { AccessTokenResponse, AuthLogin, AuthRegister } from '../interface';
 import { api, getRefreshAccessToken } from './use-auth-request';
 
 interface AuthContextType {
@@ -24,14 +24,15 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [auth, setAuth] = useState<{ isAuth: boolean; user: User | null }>({ isAuth: false, user: null });
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
   const router = useRouter();
 
   const handleAuthSuccess = async (res: AccessTokenResponse) => {
     await setAuthInCookies(res);
-    setUser(await api.readMe());
+    const user = await api.readMe();
+    setAuth({ isAuth: true, user });
     invalidateQuery();
   };
 
@@ -43,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await handleAuthSuccess(res);
       return true;
     } catch (error) {
-      handleError(error as AuthError);
+      handleError(error);
       return false;
     } finally {
       setLoading(false);
@@ -58,7 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await handleAuthSuccess(res);
       return true;
     } catch (error) {
-      handleError(error as AuthError);
+      handleError(error);
       return false;
     } finally {
       setLoading(false);
@@ -67,15 +68,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async (): Promise<void> => {
     try {
-      if (user?.id) await api.logout();
+      if (auth.user?.id) await api.logout();
     } finally {
       await removeAuthFromCookies();
-      setUser(null);
+      setAuth({ isAuth: false, user: null });
       router.replace(ROUTES.LOGIN);
     }
   };
 
-  const handleError = (error: AuthError) => {
+  const handleError = (error: unknown) => {
     if (isNetworkError(error)) {
       toast({
         title: 'Network Error',
@@ -85,36 +86,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    toast({
-      title: 'Error',
-      description: error?.message || 'Something went wrong, please try again.',
-      variant: 'destructive'
-    });
+    if (error instanceof Error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
+
+    // eslint-disable-next-line no-console
     console.error(error);
   };
 
   const initializeAuth = async () => {
     try {
-      setUser(await api.readMe());
+      const user = await api.readMe();
+      if (user) return setAuth({ isAuth: true, user });
     } catch (error) {
-      console.error(error);
       const newToken = await getRefreshAccessToken();
       if (newToken) {
         invalidateQuery();
-        setUser(await api.readMe());
         return;
       }
       await removeAuthFromCookies();
-      setUser(null);
+      setAuth({ isAuth: false, user: null });
       router.replace(ROUTES.LOGIN);
     }
   };
 
   useEffect(() => {
     initializeAuth();
-  }, []);
+  }, [auth.isAuth]);
 
-  return <AuthContext.Provider value={{ user, loading, login, register, logout }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user: auth.user, loading, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = (): AuthContextType => {
