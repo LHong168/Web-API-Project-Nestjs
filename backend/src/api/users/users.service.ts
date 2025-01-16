@@ -53,19 +53,17 @@ export class UsersService {
   async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
 
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
+    if (!user) throw new NotFoundException('User not found');
 
     // Validate current password if provided and user has existing password
     if (updateUserDto.password && !isPasswordMatched(updateUserDto.password, user.password)) {
-      throw new UnauthorizedException('Invalid Password');
+      throw new UnauthorizedException('Incorrect current password.');
     }
 
     // Update password if new password is provided
     if (updateUserDto.newPassword) {
       if (isPasswordMatched(updateUserDto.newPassword, user.password)) {
-        throw new BadRequestException('New password cannot be the same as the old password');
+        throw new BadRequestException('New password cannot be the same as the current password.');
       }
       user.password = await hashPassword(updateUserDto.newPassword);
     }
@@ -77,6 +75,7 @@ export class UsersService {
 
   async updateUserRefreshToken(id: number, refreshToken: string | null) {
     const user = await this.userRepository.findOneBy({ id });
+    if (!user) throw new NotFoundException('User does not exist');
     return this.userRepository.save({ ...user, refreshToken });
   }
 
