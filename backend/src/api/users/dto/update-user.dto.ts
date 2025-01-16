@@ -1,32 +1,24 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { OmitType, PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  Matches,
-  MinLength,
-  ValidateIf,
-} from 'class-validator';
-import { passwordRegEx } from 'src/api/auth/dto/login.dto';
+import { IsOptional, Matches, ValidateIf } from 'class-validator';
+import { passwordRegEx } from 'utils/helpers';
+
 import { CreateUserDto } from './create-user.dto';
 
-export class UpdateUserDto extends PartialType(CreateUserDto) {
-  @ApiProperty({
-    description: 'The password of the User',
-    example: 'Password@123',
-  })
+export class UpdateUserDto extends PartialType(OmitType(CreateUserDto, ['password', 'role'])) {
   @IsOptional()
   @ValidateIf((_, value) => value !== '')
   @Matches(passwordRegEx, {
-    message: `Password must contain at least one number and be at least 8 characters long`,
+    message: 'Password must be at least 8 characters long and contain only letters and numbers.'
   })
+  @ApiProperty({ description: 'The password of the User', example: 'Password@123' })
   password: string;
 
   @IsOptional()
   @ValidateIf((_, value) => value !== '')
   @Matches(passwordRegEx, {
-    message: `Password must contain at least one number and be at least 8 characters long`,
+    message: 'New Password must be at least 8 characters long and contain only letters and numbers.'
   })
+  @ApiProperty({ description: 'The new password of the User', example: 'Password@456' })
   newPassword: string;
 }

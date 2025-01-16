@@ -1,7 +1,7 @@
 'use client';
 
-import { ROUTES } from '@/config/routes';
 import Link from 'next/link';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,11 +13,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
-import { deleteUsers } from '../api';
+import { ROUTES } from '@/config/routes';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/modules/auth/hooks/use-auth';
-import { useGetUsers } from '../hooks/use-get-users';
 import { invalidateQuery } from '@/provider';
+
+import { deleteUsers } from '../api';
+import { useGetUsers } from '../hooks/use-get-users';
 
 export const DashboardTable: React.FC = () => {
   const { user } = useAuth();

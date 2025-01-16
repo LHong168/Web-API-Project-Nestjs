@@ -1,13 +1,14 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { setupSwaggerDocument } from './swagger';
-import { ConfigModule, ConfigService } from './lib/config';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+
+import { AppModule } from './app.module';
+import { ConfigModule, ConfigService } from './lib/config';
+import { setupSwaggerDocument } from './swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true,
+    cors: true
   });
 
   // =================================
@@ -19,8 +20,8 @@ async function bootstrap() {
       whitelist: true,
       transform: true,
       forbidNonWhitelisted: false,
-      errorHttpStatusCode: 422,
-    }),
+      errorHttpStatusCode: 400
+    })
   );
 
   // =================================

@@ -21,18 +21,13 @@ export class ConfigService {
 
   validate<T>(module: string, className: new () => T): T {
     const config = plainToClass(className, this.envConfig, {
-      enableImplicitConversion: true,
+      enableImplicitConversion: true
     });
     const errors = validateSync(config as never, {
-      skipMissingProperties: false,
+      skipMissingProperties: false
     });
     if (errors.length > 0) {
-      errors.forEach((e) =>
-        Logger.error(
-          `${e.constraints?.[Object.keys(e.constraints)[0]]}`,
-          module,
-        ),
-      );
+      errors.forEach(e => Logger.error(`${e.constraints?.[Object.keys(e.constraints)[0]]}`, module));
       throw new Error(`${module}: Invalid environment config.`);
     }
     return config;

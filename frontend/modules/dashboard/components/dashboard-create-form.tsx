@@ -1,14 +1,16 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Input, PasswordInput } from '@/components/atoms/input';
-import { CreateFormData, useCreateForm } from '../hooks/use-create-form';
-import { useState } from 'react';
-import { createUsers } from '../api';
-import { useToast } from '@/hooks/use-toast';
-import { ROUTES } from '@/config/routes';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+import { Input, PasswordInput } from '@/components/atoms/input';
+import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/config/routes';
+import { useToast } from '@/hooks/use-toast';
 import { invalidateQuery } from '@/provider';
+
+import { createUsers } from '../api';
+import { CreateFormData, useCreateForm } from '../hooks/use-create-form';
 
 export const DashboardCreateForm: React.FC = () => {
   const { register, handleSubmit, formState } = useCreateForm();
@@ -26,7 +28,8 @@ export const DashboardCreateForm: React.FC = () => {
       toast({ title: 'Success', variant: 'success' });
       router.push(ROUTES.DASHBOARD);
     } catch (e) {
-      toast({ title: 'Something went wrong', variant: 'destructive' });
+      if (e instanceof Error) toast({ title: e.message, variant: 'destructive' });
+      // eslint-disable-next-line no-console
       console.error(e);
     } finally {
       setLoading(false);
