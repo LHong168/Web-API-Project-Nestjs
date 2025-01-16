@@ -1,5 +1,6 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule as _JwtModule } from '@nestjs/jwt';
+
 import { ConfigService } from '../config';
 
 @Global()
@@ -10,11 +11,11 @@ import { ConfigService } from '../config';
       useFactory: (config: ConfigService) => {
         return {
           secret: config.env.JWT_SECRET,
-          signOptions: { expiresIn: config.env.JWT_EXPIRES_IN },
+          signOptions: { expiresIn: config.env.JWT_EXPIRES_IN }
         };
-      },
-    }),
+      }
+    })
   ],
-  exports: [_JwtModule],
+  exports: [_JwtModule]
 })
 export class JwtModule {}

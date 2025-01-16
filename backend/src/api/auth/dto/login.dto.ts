@@ -9,7 +9,7 @@ export class AuthLoginDto {
 
   @IsNotEmpty()
   @Matches(passwordRegEx, {
-    message: `Password must contain at least one number and be at least 8 characters long`,
+    message: `Password must contain at least one number and be at least 8 characters long`
   })
   password: string;
 }

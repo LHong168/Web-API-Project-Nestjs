@@ -1,31 +1,14 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
-import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import {
-  AuthGuard,
-  RequestWithUser,
-} from 'src/common/guards/authenticate.guard';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiParam } from '@nestjs/swagger';
+import { AuthGuard, RequestWithUser } from 'src/common/guards/authenticate.guard';
+
+import { RolesGuard } from '@/common/guards/role.guard';
+
 import { Roles } from '../../common/role/role.decorator';
 import { Role } from '../../common/role/role.enum';
-import { RolesGuard } from '@/common/guards/role.guard';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiParam,
-} from '@nestjs/swagger';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersService } from './users.service';
 
 @Controller('users')
 export class UsersController {

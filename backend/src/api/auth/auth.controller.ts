@@ -1,23 +1,10 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post, Request, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+
 import { AuthGuard, RequestWithUser } from '@/common/guards/authenticate.guard';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOkResponse,
-} from '@nestjs/swagger';
+
+import { UsersService } from '../users/users.service';
+import { AuthService } from './auth.service';
 import { AuthLoginDto } from './dto/login.dto';
 import { AuthRegisterDto } from './dto/register.dto';
 
@@ -25,7 +12,7 @@ import { AuthRegisterDto } from './dto/register.dto';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private userService: UsersService,
+    private userService: UsersService
   ) {}
 
   @HttpCode(HttpStatus.OK)
@@ -70,7 +57,7 @@ export class AuthController {
     return this.authService.generateTokens({
       sub: payload.sub,
       email: payload.email,
-      role: payload.role,
+      role: payload.role
     });
   }
 }

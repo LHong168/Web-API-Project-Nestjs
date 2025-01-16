@@ -10,13 +10,10 @@ const swaggerOptions = {
   defaultModelsExpandDepth: -1,
   docExpansion: 'none',
   filter: true,
-  tagsSorter: 'alpha',
+  tagsSorter: 'alpha'
 };
 
-export function setupSwaggerDocument(
-  app: NestExpressApplication,
-  env: string,
-): void {
+export function setupSwaggerDocument(app: NestExpressApplication, env: string): void {
   if (env === 'development') {
     const options = new DocumentBuilder()
       .setTitle('User Management API')

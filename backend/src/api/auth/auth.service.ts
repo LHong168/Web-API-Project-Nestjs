@@ -1,19 +1,16 @@
-import {
-  ConflictException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { isPasswordMatched } from 'utils/hash-password';
+import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { isPasswordMatched } from 'utils/hash-password';
+
 import { Role } from '../../common/role/role.enum';
+import { UsersService } from '../users/users.service';
 import { AuthRegisterDto } from './dto/register.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async logIn(email: string, pass: string): Promise<any> {
@@ -37,7 +34,7 @@ export class AuthService {
 
     const newUser = await this.usersService.createUser({
       ...authenticateDto,
-      role: Role.USER,
+      role: Role.USER
     });
 
     const payload = { sub: newUser.id, email: newUser.email };
@@ -55,12 +52,12 @@ export class AuthService {
   async generateTokens(payload: any) {
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
-      expiresIn: process.env.JWT_EXPIRES_IN,
+      expiresIn: process.env.JWT_EXPIRES_IN
     });
 
     const refresh_token = this.jwtService.sign(payload, {
       secret: process.env.REFRESH_TOKEN_SECRET,
-      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN,
+      expiresIn: process.env.JWT_REFRESH_EXPIRES_IN
     });
 
     // store the refresh token in the database
@@ -72,7 +69,7 @@ export class AuthService {
   async validateRefreshToken(token: string) {
     try {
       const validateToken = this.jwtService.verify(token, {
-        secret: process.env.REFRESH_TOKEN_SECRET,
+        secret: process.env.REFRESH_TOKEN_SECRET
       });
 
       const user = await this.usersService.findByUserId(validateToken.sub);
