@@ -16,7 +16,9 @@ export class CreateUserDto {
   email: string;
 
   @IsNotEmpty()
-  @Matches(passwordRegEx, { message: 'Password must be at least 8 characters long.' })
+  @Matches(passwordRegEx, {
+    message: 'Password must be at least 8 characters long and contain only letters and numbers.'
+  })
   @ApiProperty({ description: 'The password of the User', example: 'Password@123' })
   password: string;
 
